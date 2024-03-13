@@ -5,16 +5,16 @@ Created on Tue Mar 12 19:03:23 2024
 @author: sarat
 """
 
-def element_coordinates(element_number):
+def element_coordinates(element_number):                   #desired element number can be given to get the nodes and coordinates
     import numpy as np
     #creating an empty array to store integers
     nnodes = np.array([])
     xcoods = np.array([])
     ycoods = np.array([])
     #opening input file from abaqus
-    with open(r"C:\Users\sarat\Desktop\files\Job-1.inp") as file:
+    with open(r"C:\Users\sarat\Desktop\files\Job-1.inp") as file:  #file path
         data = file.readlines()
-        line_number = 193
+        line_number = 193                                   #line number based on .inp file
         if 1<=line_number<= len(data):
            left = data[line_number-1].strip().split(",")
            left_edge = np.array(left, dtype=int)             #nodes on the left edge of sample
@@ -22,19 +22,19 @@ def element_coordinates(element_number):
         line_number1 = 197  
         if 1<=line_number1<= len(data):
             bottom = data[line_number1-1].strip().split(",")
-            bottom_edge = np.array(bottom, dtype=int)        #bottom edge
+            bottom_edge = np.array(bottom, dtype=int)        #bottom edge nodes
             #print(bottom_edge)
         line_number2 = 201  
         if 1<=line_number2<= len(data):
             top = data[line_number2-1].strip().split(",")
-            top_edge = np.array(top, dtype=int)              #top edge
+            top_edge = np.array(top, dtype=int)              #top edge nodes
             #print(top_edge)
         line_number3 = 205
         if 1<=line_number3<= len(data):
            right = data[line_number3-1].strip().split(",")
-           right_edge = np.array(right, dtype=int)           #right edge
+           right_edge = np.array(right, dtype=int)           #right edge nodes
            #print(right_edge)
-        for i in range(9,130):
+        for i in range(9,130):                                #getting nodes and corresponding coordinates
             #dividing columns by comma
             nodes = data[i].strip().split(",")
             #allocating each string
@@ -52,7 +52,7 @@ def element_coordinates(element_number):
     #creating an array combining node numbers, and both coordinates of the nodes
     #zeroth column indicates node number, first x coordinate, second is ycoordinate
     matrix = np.array([nnodes, xcoods, ycoods]).T
-    with open(r"C:\Users\sarat\Desktop\files\Job-1.inp") as file1:
+    with open(r"C:\Users\sarat\Desktop\files\Job-1.inp") as file1:                  #for getting elements and corresponding nodes
          ele_data = file1.readlines()
          ele = np.array([])
          elen1 = np.array([])
@@ -79,19 +79,19 @@ def element_coordinates(element_number):
              elen6 = np.append(elen6,eln6)
     col_arrays = np.array([ele,elen1,elen2,elen3,elen4,elen5,elen6])
     m =len(ele)
-    matrix1 = [[0]*7 for _ in range(m)] #creating an empty matrix to store elements and nodes
+    matrix1 = [[0]*7 for _ in range(m)]                                    #creating an empty matrix to store elements and nodes
     for i in range(7):
         for j in range(m):
             matrix1[j][i] = col_arrays[i][j] 
     #print(matrix1[18][:]) #list of elements[1] and corresponding npodes[2]
     ele_nod_list = []
-    noden = np.array([matrix1[element_number-1][1:]]) #nodes of corresponding element
+    noden = np.array([matrix1[element_number-1][1:]])                      #nodes of corresponding element
     for k in range(6):   
         for j in range(121):
-            if noden[0][k]== matrix[j][0]: #matching nodes from element connectivity to node numbers
+            if noden[0][k]== matrix[j][0]:                                  #matching nodes from element connectivity to node numbers
                 ele_nod = matrix[j][1:]
                 ele_nod_list.append(ele_nod)
-    ele_coordinates = np.array(ele_nod_list) #coordinates of the element
+    ele_coordinates = np.array(ele_nod_list)                                #coordinates of the element
     #print(noden)
     #print( ele_coordinates.shape)
-    return noden, ele_coordinates
+    return noden, ele_coordinates                                 #returns nodes and coordinates of desired element
